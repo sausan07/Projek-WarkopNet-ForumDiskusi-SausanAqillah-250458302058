@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class NavbarProfile extends Component
 {
@@ -11,7 +12,7 @@ class NavbarProfile extends Component
 
     public function mount()
     {
-        $this->user = auth()->user(); // SIMPAN user sekali saat mount
+        $this->user = Auth::user(); // SIMPAN user sekali saat mount
     }
 
     public function toggle()

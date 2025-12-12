@@ -11,7 +11,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Placeholder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -32,30 +31,13 @@ class ReportResource extends Resource
 
         return $schema
             ->components([
-                Placeholder::make('reporter')
-                    ->label('Pelapor')
-                    ->content(fn ($record) => $record ? $record->user->name . ' (@' . $record->user->username . ')' : '-'),
-                
-                Placeholder::make('reported_content')
-                    ->label('Konten yang Dilaporkan')
-                    ->content(function ($record) {
-                        if (!$record) return '-';
-                        
-                        if ($record->thread_id && $record->thread) {
-                            return 'Thread: "' . $record->thread->title . '" oleh @' . $record->thread->user->username;
-                        } elseif ($record->post_id && $record->post) {
-                            return 'Comment: "' . Str::limit($record->post->content, 100) . '" oleh @' . $record->post->user->username;
-                        }
-                        return 'Konten telah dihapus';
-                    })
-                    ->columnSpanFull(),
-                
                 Textarea::make('reason')
                     ->label('Alasan Pelaporan')
                     ->required()
-                    ->disabled()
+                    ->disabled()        //admin cm bisa baca, ga bisa edit
                     ->columnSpanFull(),
                 
+                //mengubah status report
                 Select::make('status')
                     ->label('Status')
                     ->options([
@@ -69,53 +51,69 @@ class ReportResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table {
-        
+
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
+                
+                //username dari relasi user
                 TextColumn::make('user.username')
                     ->label('Pelapor')
                     ->searchable()
                     ->sortable(),
-                
+                    
+                //konten yang dilaporkan
                 TextColumn::make('reported_content')
                     ->label('Konten Dilaporkan')
+
+                    //sesuai kondisi
                     ->getStateUsing(function ($record) {
+
+                        //thread
                         if ($record->thread_id && $record->thread) {
                             return '[Thread] ' . Str::limit($record->thread->title, 50);
+
+                        //post/komen
                         } elseif ($record->post_id && $record->post) {
                             return '[Comment] ' . Str::limit($record->post->content, 50);
                         }
-                        return '[Dihapus]';
+
+                        return '[Kosong]';
                     })
+
+                    //searching tabel lain
                     ->searchable(['threads.title', 'posts.content'])
                     ->wrap(),
-                
+                    
+                //alasan pelaporan
                 TextColumn::make('reason')
                     ->label('Alasan')
-                    ->limit(30)
+                    ->limit(30) //tampilin 30 karakter
                     ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
                         return strlen($state) > 30 ? $state : null;
                     }),
                 
+                //status report
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'pending' => 'warning',
+                        'pending'  => 'warning',
                         'approved' => 'success',
                         'rejected' => 'danger',
                     })
                     ->sortable(),
-                
+
                 TextColumn::make('created_at')
                     ->label('Dilaporkan')
                     ->dateTime()
                     ->sortable()
                     ->since(),
             ])
+
             ->filters([
                 SelectFilter::make('status')
                     ->options([
@@ -124,16 +122,19 @@ class ReportResource extends Resource
                         'rejected' => 'Rejected',
                     ]),
             ])
+
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ]);
     }
+
 
     public static function getPages(): array
     {

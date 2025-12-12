@@ -157,4 +157,5 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
+    'legacy_alpine_support' => false,
 ];

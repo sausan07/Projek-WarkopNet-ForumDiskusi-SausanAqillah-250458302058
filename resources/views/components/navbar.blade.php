@@ -16,10 +16,18 @@
                 @livewire('navbar-profile')
 
 
-            @else
-                <a href="{{ route('login') }}" class="bg-[#373737] hover:bg-[#FF6EC7] rounded-xl px-4 py-2 font-bold text-white transition-colors">Login</a>
-                <a href="{{ route('register') }}" class="bg-[#373737] hover:bg-[#FF6EC7] rounded-xl px-4 py-2 font-bold text-white transition-colors">Register</a>
-            @endauth
+@else
+<div class="flex">
+    <a href="{{ route('login') }}"
+       class="bg-[#373737] hover:bg-[#FF6EC7] rounded-md
+              px-4 py-2 text-sm
+              sm:px-5 sm:py-2.5 sm:text-base
+              font-semibold text-white transition-colors">
+        Login
+    </a>
+</div>
+@endauth
+
         </div>
     </div>
 </nav>

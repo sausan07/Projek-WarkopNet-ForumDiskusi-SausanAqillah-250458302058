@@ -2,21 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PostResource\Pages;
+
+use App\Filament\Resources\PostResource\Pages\ManagePosts;
 use App\Models\Post;
 use BackedEnum;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\BulkAction;
-use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class PostResource extends Resource
 {
@@ -36,30 +38,33 @@ class PostResource extends Resource
     {
         return $schema
             ->components([
-                Forms\Components\Select::make('user_id')
-                    ->label('Author')
-                    ->relationship('user', 'username')
+                //ambil relasi "user" dan menampilkan field "username"
+                Select::make('user_id')
+                    ->label('Username')
+                    ->relationship('user', 'username') //ngehubungin ke relasi user
                     ->required()
                     ->searchable()
                     ->preload(),
-                    
-                Forms\Components\Select::make('thread_id')
+                //ambil relasi "thread" dan menampilkan title thread
+                Select::make('thread_id')
                     ->label('Thread')
                     ->relationship('thread', 'title')
                     ->required()
                     ->searchable()
                     ->preload(),
-                    
-                Forms\Components\Textarea::make('content')
+
+                //isi postingan
+                Textarea::make('content')
                     ->label('Content')
                     ->required()
-                    ->rows(5)
-                    ->columnSpanFull(),
-                    
-                Forms\Components\Select::make('status')
+                    ->rows(5)        //tinggi textarea
+                    ->columnSpanFull(), //memenuhi 1 baris form
+
+                //status post
+                Select::make('status')
                     ->options([
                         'active' => 'Active',
-                        'inactive' => 'Inactive',
+                        'deleted' => 'Deleted',
                     ])
                     ->default('active')
                     ->required(),
@@ -69,107 +74,63 @@ class PostResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('id')
+                //id post
+                TextColumn::make('id')
                     ->label('ID')
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('user.username')
-                    ->label('Author')
+
+                //username dari relasi user
+                TextColumn::make('user.username')
+                    ->label('Username')
                     ->searchable()
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('thread.title')
+
+                //judul thread
+                TextColumn::make('thread.title')
                     ->label('Thread')
+                    ->limit(40) //batasi panjang text
                     ->searchable()
-                    ->limit(40)
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('content')
+
+                //dipotong supaya tidak panjang
+                TextColumn::make('content')
                     ->label('Content')
                     ->limit(60)
                     ->searchable()
                     ->wrap(),
-                    
-                Tables\Columns\BadgeColumn::make('status')
+
+                //status dengan warna
+                TextColumn::make('status')
                     ->colors([
                         'success' => 'active',
-                        'danger' => 'inactive',
+                        'danger' => 'deleted',
                     ]),
-                    
-                Tables\Columns\TextColumn::make('likes_count')
+
+                //jumlah likes
+                TextColumn::make('likes_count')
                     ->label('Likes')
                     ->counts('likes')
                     ->sortable(),
-                    
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Posted At')
-                    ->dateTime('d M Y, H:i')
-                    ->sortable(),
             ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options([
-                        'active' => 'Active',
-                        'inactive' => 'Inactive',
-                    ]),
-                    
-                Tables\Filters\SelectFilter::make('thread')
-                    ->relationship('thread', 'title')
-                    ->searchable()
-                    ->preload(),
-                    
-                Tables\Filters\SelectFilter::make('user')
-                    ->relationship('user', 'username')
-                    ->searchable()
-                    ->preload(),
-            ])
-            ->actions([
+
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    
-                    BulkAction::make('activate')
-                        ->label('Set as Active')
-                        ->icon('heroicon-o-check-circle')
-                        ->color('success')
-                        ->requiresConfirmation()
-                        ->action(function ($records) {
-                            $records->each->update(['status' => 'active']);
-                        }),
-                        
-                    BulkAction::make('deactivate')
-                        ->label('Set as Inactive')
-                        ->icon('heroicon-o-x-circle')
-                        ->color('danger')
-                        ->requiresConfirmation()
-                        ->action(function ($records) {
-                            $records->each->update(['status' => 'inactive']);
-                        }),
                 ]),
-            ])
-            ->defaultSort('created_at', 'desc');
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManagePosts::route('/'),
+            'index' => ManagePosts::route('/'),
         ];
-    }
-    
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 }

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use layout;
 
 class AuthForm extends Component
 {
@@ -38,7 +39,7 @@ class AuthForm extends Component
             'email' => $this->login_email,
             'password' => $this->login_password,
         ], $this->remember)) {
-            return redirect()->route('home');
+            return redirect()->route('landing');
         }
 
         $this->addError('login_email', 'Email atau Password salah kak');
@@ -61,10 +62,10 @@ class AuthForm extends Component
 
         Auth::login($user);
 
-        return redirect()->route('home');
+        return redirect()->route('landing');
     }
 
     public function render() {
-        return view('livewire.auth-form');
+        return view('livewire.auth-form')->layout('layouts.auth');
     }
 }

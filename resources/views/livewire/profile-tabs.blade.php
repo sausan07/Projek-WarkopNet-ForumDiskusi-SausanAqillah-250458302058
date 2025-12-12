@@ -17,11 +17,13 @@
         </button>
 
         {{-- BOOKMARKS --}}
+        @if(auth()->check() && auth()->id() === $user->id)
         <button wire:click="setTab('bookmarks')"
             class="px-6 py-3 font-bold border-b-2 whitespace-nowrap
             {{ $activeTab === 'bookmarks' ? 'border-[#FFB347] text-[#373737]' : 'border-transparent text-gray-500' }}">
             🔖 Bookmark ({{ $user->bookmarks->count() }})
         </button>
+        @endif
 
         {{-- REPORTS (hanya muncul untuk pemilik akun) --}}
         @if(auth()->check() && auth()->id() === $user->id)

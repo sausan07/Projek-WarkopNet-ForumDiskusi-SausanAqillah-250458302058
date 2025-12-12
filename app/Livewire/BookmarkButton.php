@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Bookmark;
 use App\Models\Post;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class BookmarkButton extends Component
 {
@@ -22,8 +23,8 @@ class BookmarkButton extends Component
     
 
     public function checkBookmarkStatus() {
-        if (auth()->check()) {
-            $query = Bookmark::where('user_id', auth()->id());
+        if (Auth::check()) {
+            $query = Bookmark::where('user_id', Auth::id());
             
             if ($this->threadId) {
                 $query->where('thread_id', $this->threadId);
@@ -38,13 +39,13 @@ class BookmarkButton extends Component
     }
 
     public function toggleBookmark() {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         if ($this->isBookmarked) {
             
-            $query = Bookmark::where('user_id', auth()->id());
+            $query = Bookmark::where('user_id', Auth::id());
             
             if ($this->threadId) {
                 $query->where('thread_id', $this->threadId);
@@ -63,7 +64,7 @@ class BookmarkButton extends Component
         else {
            
             Bookmark::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'thread_id' => $this->threadId,
                 'post_id' => $this->postId,
             ]);

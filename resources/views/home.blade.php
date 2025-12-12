@@ -81,7 +81,7 @@
             <div class="flex items-center justify-between">
                 <h1 class="font-utama text-2xl font-bold text-[#373737]">  Hasil Pencarian: <span class="text-[#EB5160]">"{{ $searchQuery }}"</span>
                 </h1>
-                <a href="{{ route('home') }}" class="text-[#0509f2] hover:underline">← Kembali</a>
+                <a href="{{ route('home') }}" class="text-[#0509f2] hover:underline">Kembali</a>
             </div>
         @else
             <h1 class="font-utama text-2xl font-bold text-[#373737]">Diskusi Terbaru</h1>

@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Select;
 
 class ThreadResource extends Resource
 {
@@ -36,14 +37,17 @@ class ThreadResource extends Resource
                     ->columnSpanFull(),
                 TextInput::make('slug')
                     ->required(),
-                TextInput::make('user_id')
+                Select::make('user_id')
+                    ->label('User')
+                    ->relationship('user', 'name') // tampilkan nama user, simpan id
+                    ->required(),
+
+                Select::make('category_id')
+                    ->label('Kategori')
+                    ->relationship('category', 'name') // tampilkan nama kategori, simpan id
                     ->required()
-                    ->numeric(),
-                TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
-            ]);
-    }
+                            ]);
+                    }
 
     public static function table(Table $table): Table
     {
@@ -54,12 +58,16 @@ class ThreadResource extends Resource
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('category_id')
-                    ->numeric()
-                    ->sortable(),
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('category.name')
+                    ->label('Kategori')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

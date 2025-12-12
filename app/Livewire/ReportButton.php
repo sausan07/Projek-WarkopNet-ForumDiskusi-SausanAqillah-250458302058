@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Report;
 use Livewire\Component;
 use Livewire\Attributes\On; 
+use Illuminate\Support\Facades\Auth;
 
 class ReportButton extends Component
 {
@@ -48,7 +49,7 @@ class ReportButton extends Component
         $this->validate();
 
         // Cek sudah melapor
-        $reportin = Report::where('user_id', auth()->id())
+        $reportin = Report::where('user_id', Auth::id())
             ->where(function($q) {
                 if ($this->threadId) $q->where('thread_id', $this->threadId);
                 if ($this->postId) $q->where('post_id', $this->postId);
@@ -63,7 +64,7 @@ class ReportButton extends Component
 
         // Buat laporan
         Report::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'thread_id' => $this->threadId,
             'post_id' => $this->postId,
             'reason' => $this->reason,
@@ -82,7 +83,9 @@ class ReportButton extends Component
         $this->notifType = $type;
         $this->showNotif = true;
 
-        $this->dispatchBrowserEvent('hide-notif');
+        $this->dispatch('hide-notif');
+
+
     }
 
     #[On('hide-notif')]

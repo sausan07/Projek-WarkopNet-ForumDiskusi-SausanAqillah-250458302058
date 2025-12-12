@@ -19,15 +19,7 @@ class User extends Authenticatable implements FilamentUser
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'user_role',
-        'bio',
-        'image',
-        'password',
-    ];
+    protected $fillable = ['name', 'username', 'email', 'user_role', 'bio', 'image','password',];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -79,15 +71,15 @@ class User extends Authenticatable implements FilamentUser
     }
 
 
-public function followers()
-{
-    return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')->withTimestamps();
-}
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id')->withTimestamps();
+    }
 
-public function following()
-{
-    return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')->withTimestamps();
-}
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id')->withTimestamps();
+    }
  
     public function isFollowing(User $user)
     {
@@ -108,28 +100,26 @@ public function following()
     //nyoba
 
 
-public function badge()
-{
-    return cache()->remember("user_badge_{$this->id}", 60, function () {
+    public function badge()
+    {
+        return cache()->remember("user_badge_{$this->id}", 60, function () {
 
-        $threads = $this->threads()->count();
-        $posts   = $this->posts()->count();
+            $threads = $this->threads()->count();
+            $posts   = $this->posts()->count();
 
-        // hitung like dari semua post user
-        $postIds = $this->posts()->pluck('id');
-        $likes = \App\Models\Like::whereIn('post_id', $postIds)->count();
+            // hitung like dari semua post user
+            $postIds = $this->posts()->pluck('id');
+            $likes = \App\Models\Like::whereIn('post_id', $postIds)->count();
 
-        $points = ($threads * 3) + ($posts * 1) + ($likes * 2);
+            $points = ($threads * 3) + ($posts * 1) + ($likes * 2);
 
-        if ($points > 30) return ['Legenda Meja 3', '⭐'];
-        if ($points > 20) return ['Barista Diskusi', '🍵'];
-        if ($points > 10) return ['Anak Warkop', '🔥'];
-        if ($points > 5)  return ['Pelanggan Tetap', '🍪'];
+            if ($points > 30) return ['Legenda Meja 3', '⭐'];
+            if ($points > 20) return ['Barista Diskusi', '🍵'];
+            if ($points > 10) return ['Anak Warkop', '🔥'];
+            if ($points > 5)  return ['Pelanggan Tetap', '🍪'];
 
-        return ['Kopi Hitam', '☕'];
-    });
-}
-
-
+            return ['Kopi Hitam', '☕'];
+        });
+    }
 
 }

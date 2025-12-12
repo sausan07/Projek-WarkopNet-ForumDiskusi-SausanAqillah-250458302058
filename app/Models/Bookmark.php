@@ -7,15 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Bookmark extends Model
 {
-    use HasFactory;
 
     public $timestamps = false;
     
-    protected $fillable = [
-        'user_id', 
-        'thread_id', 
-        'post_id'
-    ];
+    protected $fillable = ['user_id', 'thread_id', 'post_id'];
 
     protected $casts = [
         'created_at' => 'datetime',

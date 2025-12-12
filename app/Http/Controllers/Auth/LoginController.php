@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    //untuk menampilkan halaman
-    public function showLoginForm() {
-        return view('auth.login');
-    }
-    
     public function logout() {
-        auth()->logout();
+        Auth::logout();
         session()->invalidate();
         session()->regenerateToken();
         return redirect('/');

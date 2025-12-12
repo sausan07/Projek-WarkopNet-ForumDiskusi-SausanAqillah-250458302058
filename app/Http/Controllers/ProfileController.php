@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
 
 class ProfileController extends Controller
 {
@@ -28,7 +30,7 @@ class ProfileController extends Controller
     public function edit($username) {
         $user = User::where('username', $username)->firstOrFail();
         
-        if (auth()->id() !== $user->id) {
+        if (Auth::id() !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -38,7 +40,7 @@ class ProfileController extends Controller
     public function update(Request $request, $username) {
         $user = User::where('username', $username)->firstOrFail();
         
-        if (auth()->id() !== $user->id) {
+        if (Auth::id() !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -59,7 +61,6 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('profile', $user->username)
-        ->with('success', 'Profil berhasil diupdate!');
+        return redirect()->route('profile', $user->username);
     }
 }

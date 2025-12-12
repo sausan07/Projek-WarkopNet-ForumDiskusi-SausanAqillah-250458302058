@@ -7,15 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Report extends Model
 {
-    use HasFactory;
     
-    protected $fillable = [
-        'user_id', 
-        'thread_id', 
-        'post_id', 
-        'reason', 
-        'status'
-    ];
+    protected $fillable = ['user_id', 'thread_id', 'post_id', 'reason', 'status'];
 
     public function user(){
         return $this->belongsTo(User::class);

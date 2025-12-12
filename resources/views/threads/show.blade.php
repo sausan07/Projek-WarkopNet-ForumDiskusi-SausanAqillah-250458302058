@@ -4,13 +4,8 @@
 
 <x-navbar />
 
-<main class="max-w-4xl mx-auto py-10 px-6">
 
-    @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6 shadow">
-            {{ session('success') }}
-        </div>
-    @endif
+<main class="max-w-4xl mx-auto py-10 px-6">
 
     <!-- Thread Card -->
     <article class="bg-white border border-[#FFB347]/50 rounded-3xl shadow-lg p-8 mb-10 transition hover:shadow-xl">
@@ -44,6 +39,8 @@
                             #{{ $thread->category->name }}
                         </span>
                     </div>
+
+                    
                 </div>
 
                 <h1 class="mt-3 text-2xl font-utama font-bold text-[#373737]">{{ $thread->title }}</h1>
@@ -65,15 +62,20 @@
         </div>
     </article>
 
+
+
+
+
+    
     <!-- Reply Form -->
 <section class="bg-[#FFFAF0] border border-[#FFB347]/40 rounded-2xl p-6 mb-8 shadow">
     <h2 class="font-bold font-utama text-lg mb-3 text-[#373737]">Balas Diskusi</h2>
     <form action="{{ route('posts.store', $thread->slug) }}" method="POST">
         @csrf
-        <textarea name="content" id="editor">{{ old('content') }}</textarea>
-        @if(isset($errors) && $errors->has('content'))
-            <p class="text-red-500 text-sm mt-1">{{ $errors->first('content') }}</p>
-        @endif
+        <textarea name="content" id="summernote">{{ old('content') }}</textarea>
+        @error('content')
+            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+        @enderror
         <div class="flex justify-end gap-3 mt-5">
             <a href="{{ route('home') }}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-xl text-[#373737] font-semibold transition">Batal</a>
             <button type="submit" class="px-6 py-2 bg-[#F29F05] hover:bg-[#EB5160] text-white rounded-xl font-bold transition">Kirim Balasan</button>
@@ -91,15 +93,15 @@
         </h3>
         @forelse($thread->posts as $post)
         <div class="flex items-start gap-4 group">
-@if($post->user->image)
-    <img src="{{ asset('storage/' . $post->user->image) }}" 
-         class="w-9 h-9 rounded-full object-cover border shadow-sm" />
-@else
-    <div class="w-9 h-9 rounded-full bg-black
-                text-white flex items-center justify-center font-bold text-sm shadow-sm">
-        {{ strtoupper(substr($post->user->username, 0, 2)) }}
-    </div>
-@endif
+        @if($post->user->image)
+            <img src="{{ asset('storage/' . $post->user->image) }}" 
+                class="w-9 h-9 rounded-full object-cover border shadow-sm" />
+        @else
+            <div class="w-9 h-9 rounded-full bg-black
+                        text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                {{ strtoupper(substr($post->user->username, 0, 2)) }}
+            </div>
+        @endif
 
             <div class="border rounded-2xl p-5 shadow bg-white border-[#FFB347]/40 flex-1 group-hover:shadow-lg transition">
                 <div class="flex justify-between items-center mb-2">
@@ -118,6 +120,7 @@
                     @livewire('bookmark-button', ['postId' => $post->id], key('bookmark-'.$post->id))
                     @livewire('report-button', ['postId' => $post->id], key('report-post-'.$post->id))
                     
+                    
                 </div>
             </div>
         </div>
@@ -131,16 +134,6 @@
 </main>
 
 
-<!-- CKEditor -->
-<script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
-<script>
-    CKEDITOR.replace('editor', {
-        height: 200,
-        allowedContent: true,
-        versionCheck: false,
-        removeButtons: 'PasteFromWord'
-    });
-</script>
 
 <style>
 @keyframes slide-in {

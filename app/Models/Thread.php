@@ -3,20 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
 class Thread extends Model
 {
-    use HasFactory;
 
-    protected $fillable = [
-        'title', 
-        'content', 
-        'slug', 
-        'user_id', 
-        'category_id'
-    ];
+    protected $fillable = ['title', 'content', 'slug', 'user_id', 'category_id'];
 
 
     public function user() {
@@ -35,12 +27,12 @@ class Thread extends Model
         return $this->hasMany(Report::class);
     }
 
-        protected static function boot() {
-        parent::boot();
+    protected static function boot() {
+    parent::boot();
         
-        static::creating(function ($thread) {
-            if (empty($thread->slug)) {
-                $thread->slug = Str::slug($thread->title) . '-' . Str::random(3);
+    static::creating(function ($thread) {
+        if (empty($thread->slug)) {
+            $thread->slug = Str::slug($thread->title) . '-' . Str::random(3);
             }
         });
     }

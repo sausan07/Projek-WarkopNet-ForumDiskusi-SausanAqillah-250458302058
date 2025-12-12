@@ -9,15 +9,13 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+
 
 class UserResource extends Resource
 {
@@ -31,8 +29,7 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->required(),
+
                 TextInput::make('username')
                     ->required(),
                 TextInput::make('email')
@@ -42,16 +39,7 @@ class UserResource extends Resource
                 TextInput::make('user_role')
                     ->required()
                     ->default('member'),
-                TextInput::make('bio'),
-                FileUpload::make('image')
-    ->directory('avatars')
-    ->disk('public')
-    ->image()
-    ->visibility('public'),
-                DateTimePicker::make('email_verified_at'),
-                TextInput::make('password')
-                    ->password()
-                    ->required(),
+
             ]);
     }
 
@@ -60,8 +48,7 @@ class UserResource extends Resource
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
+
                 TextColumn::make('username')
                     ->searchable(),
                 TextColumn::make('email')
@@ -69,18 +56,6 @@ class UserResource extends Resource
                     ->searchable(),
                 TextColumn::make('user_role')
                     ->searchable(),
-                TextColumn::make('bio')
-                    ->searchable(),
-ImageColumn::make('image')
-    ->disk('public')
-    ->visibility('public')
-    ->getStateUsing(fn ($record) => $record->image), // ambil path murni dari DB
-
-
-
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

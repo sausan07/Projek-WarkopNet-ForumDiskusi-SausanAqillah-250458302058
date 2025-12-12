@@ -34,7 +34,7 @@
 
 
         <div>
-            <label class="block font-semibold text-[#373737] mb-2">Kategori *</label>
+            <label class="  text-[#373737] mb-2">Kategori *</label>
             <select name="category_id" class="w-full px-4 py-3 rounded-xl border border-[#FFB347]/50 bg-white focus:ring-2 focus:ring-[#FF6EC7] focus:outline-none text-[#373737] @error('category_id') border-red-500 @enderror" required>
                 <option value="" disabled selected>Pilih kategori...</option>
                 @foreach($categories as $category)
@@ -79,13 +79,17 @@
 
 
 
-<script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('editor', {
         height: 200,
         allowedContent: true,
         versionCheck: false,
-        removeButtons: 'PasteFromWord'
+
+        toolbar: [
+            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+            { name: 'paragraph',    items: ['NumberedList', 'BulletedList'] },
+            { name: 'links',        items: ['Link'] }
+        ]
     });
 </script>
 

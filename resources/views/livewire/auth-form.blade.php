@@ -1,10 +1,19 @@
+
+
 <div class="flex flex-col md:flex-row max-w-4xl w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
 
 
-  <div class="hidden md:block md:w-1/2 
-  {{ $activeForm === 'login' ? 'md:order-1' : 'md:order-2' }}">
-    <img src="{{ asset('images/login.png') }}" class="w-full h-full object-cover">
-  </div>
+<div class="hidden md:block md:w-1/2 
+    {{ $activeForm === 'login' ? 'md:order-1' : 'md:order-2' }}">
+
+    @if($activeForm === 'login')
+        <img src="{{ asset('images/login.png') }}" class="w-full h-full object-cover">
+    @else
+        <img src="{{ asset('images/regis.png') }}" class="w-full h-full object-cover">
+    @endif=
+
+</div>
+
 
 
   <div class="w-full md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center 
@@ -13,7 +22,7 @@
 
     @if($activeForm === 'login')
 
-      <h2 class="text-gray-900 mb-8 text-3xl">Login</h2>
+      <h2 class="text-gray-900 mb-8 text-3xl">Silahkan Login Kak</h2>
 
       <form wire:submit.prevent="submitLogin" class="space-y-6">
 
@@ -38,13 +47,13 @@
             Remember me</label>
         </div>
 
-        <button class="w-full bg-[#F0A04B] text-gray-900 p-3 rounded-full 
+        <button type="submit" class="w-full bg-[#F0A04B] text-gray-900 p-3 rounded-full 
         font-semibold hover:bg-[#FCE7C8]">Login</button>
 
-        <p class="text-center text-sm pt-4">Belum punya akun?
+        <p class="text-center text-sm pt-4">Kakak Belum punya akun?
           <button type="button" wire:click="switchTo('register')" 
           class="font-semibold hover:underline">
-            Daftar sekarang
+            Ayok Daftar sekarang!
           </button>
         </p>
 
@@ -53,7 +62,7 @@
 
   
     @if($activeForm === 'register')
-      <h2 class="text-gray-900 mb-8 text-3xl">Daftar</h2>
+      <h2 class="text-gray-900 mb-8 text-3xl">Silahkan Mendaftar Kak</h2>
 
       <form wire:submit.prevent="submitRegister" class="space-y-6">
 
@@ -88,10 +97,10 @@
         <button class="w-full bg-[#F0A04B] text-gray-900 p-3 rounded-full 
         font-semibold hover:bg-[#FCE7C8]">Daftar</button>
 
-        <p class="text-center text-sm pt-4">Sudah punya akun?
+        <p class="text-center text-sm pt-4">Kakak Sudah punya Akun?
           <button type="button" wire:click="switchTo('login')" 
           class="font-semibold hover:underline">
-            Masuk di sini
+            Masuk di sini Kak
           </button>
         </p>
 

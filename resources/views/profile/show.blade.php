@@ -38,11 +38,9 @@
 
                 
                 <div class="flex flex-wrap justify-center sm:justify-start gap-6 mt-4 text-[#373737]">
-                    <span><b>{{ $user->followers->count() }}</b> Pengikut</span>
-                    <span><b>{{ $user->following->count() }}</b> Mengikuti</span>
-                    <span><b>{{ $user->threads->count() }}</b> Diskusi</span>
-                    <span><b>{{ $user->posts->count() }}</b> Balasan</span>
-                </div>
+    @livewire('profile-stats', ['userId' => $user->id], key('profilestats-'.$user->id))
+</div>
+
 
 
 

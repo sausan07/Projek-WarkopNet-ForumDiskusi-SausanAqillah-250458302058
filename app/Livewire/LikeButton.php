@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Like;
 use App\Models\Post;
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class LikeButton extends Component
 {
@@ -22,9 +23,9 @@ class LikeButton extends Component
         if ($post) {
             $this->likesCount = $post->likes()->count();
             
-            if (auth()->check()) {
+            if (Auth::check()) {
                 $this->isLiked = $post->likes()
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->exists();
             }
         }
@@ -32,13 +33,13 @@ class LikeButton extends Component
 
 
     public function toggleLike() {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         if ($this->isLiked) {
             //unlike
-            Like::where('user_id', auth()->id())
+            Like::where('user_id', Auth::id())
             ->where('post_id', $this->postId)
             ->delete();
             $this->isLiked = false;
@@ -48,7 +49,7 @@ class LikeButton extends Component
         else {
             //like
             Like::create([
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(),
                 'post_id' => $this->postId,
             ]);
 
